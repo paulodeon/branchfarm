@@ -1,0 +1,18 @@
+# Branchfarm local settings
+# Copy to config.yml and adjust for your machine.
+# CLI flags (--no-caddy, --no-tmux) override these per invocation.
+
+# Reverse proxy (set false if Caddy is not installed)
+caddy: true
+
+# Tmux sessions (set false to skip tmux session creation)
+tmux: true
+
+# Ruby version manager: rbenv | asdf | mise | system
+ruby_manager: rbenv
+
+# Where to look for project workspaces ($HOME/Code by default)
+# workspaces_dir: /Users/you/Code
+
+# Where to write Caddy snippets (auto-detected from brew --prefix)
+# caddy_snippets_dir: /usr/local/var/branchfarm/caddy/snippets

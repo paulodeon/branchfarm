@@ -1,0 +1,22 @@
+# Local settings (use config.yml.example as template)
+config.yml
+
+# Runtime state files
+state/ports.tsv
+state/ports.lock
+
+# Ruby
+.ruby-lsp/
+*.gem
+
+# IDE/Editor
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Notes (personal)
+.notes/
