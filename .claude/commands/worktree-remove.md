@@ -38,7 +38,12 @@ Example: `/worktree-remove myapp/feature-branch`
    - Ask for confirmation before proceeding
    - Show option to cancel
 
-6. Remove the worktree:
+6. **IMPORTANT**: Before removing, ensure the shell is in the workspace root (not inside the worktree being removed — a deleted cwd will break all subsequent commands):
+   ```bash
+   cd <workspace-root>
+   ```
+
+   Remove the worktree:
    ```bash
    branch-env remove ${PROJECT}/${BRANCH}
    ```
