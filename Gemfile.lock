@@ -29,5 +29,8 @@ DEPENDENCIES
   tty-command (~> 0.10)
   tty-table (~> 0.12)
 
+RUBY VERSION
+   ruby 4.0.1p0
+
 BUNDLED WITH
    2.7.2
