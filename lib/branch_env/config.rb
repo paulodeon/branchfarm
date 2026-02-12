@@ -145,6 +145,24 @@ module BranchEnv
       raise Error, "Unknown project '#{project_name}' (no .branchfarm.yml in #{workspaces_dir}/#{project_name}/ or #{legacy})"
     end
 
+    def validate_repo_dir_is_not_workspace!
+      # Ensure repo_dir is a standalone clone, not a worktree of the workspace repo.
+      # This catches the case where master/ was accidentally created via
+      # `git worktree add` from the workspace root instead of `git clone`.
+      git_common_dir = `git -C #{repo_dir} rev-parse --git-common-dir 2>/dev/null`.strip
+      return if git_common_dir.empty?
+
+      workspace_git_dir = File.join(@workspace_root, ".git")
+      return unless File.exist?(workspace_git_dir)
+
+      repo_common = File.realpath(git_common_dir)
+      ws_git = File.realpath(workspace_git_dir)
+      if repo_common == ws_git
+        raise Error, "repo_dir (#{repo_dir}) is a worktree of the workspace repo, not a standalone clone. " \
+                     "Remove it and clone the correct repo: git clone <app-repo-url> #{repo_dir}"
+      end
+    end
+
     def expand_path(path)
       return nil unless path
 
@@ -166,6 +184,8 @@ module BranchEnv
       unless File.directory?(repo_dir)
         raise Error, "repo_dir is not a directory: #{repo_dir}"
       end
+
+      validate_repo_dir_is_not_workspace!
 
       unless File.exist?(base_env_file)
         raise Error, "base_env_file not found: #{base_env_file}"
