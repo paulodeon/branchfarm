@@ -122,7 +122,14 @@ module BranchEnv
     private
 
     def load_config
-      YAML.safe_load(File.read(@config_path), permitted_classes: [], aliases: true)
+      base = YAML.safe_load(File.read(@config_path), permitted_classes: [], aliases: true)
+      local_path = @config_path.sub(/\.yml$/, ".local.yml")
+      if File.exist?(local_path)
+        local = YAML.safe_load(File.read(local_path), permitted_classes: [], aliases: true)
+        base.merge(local)
+      else
+        base
+      end
     end
 
     def find_config_path(project_name)
