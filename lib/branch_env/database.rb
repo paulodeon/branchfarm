@@ -24,12 +24,32 @@ module BranchEnv
       end
     end
 
+    def drop_matching(prefix)
+      matching = databases_matching(prefix)
+      if matching.empty?
+        puts "No databases matching: #{prefix}*"
+      else
+        matching.each { |db| drop(db) }
+      end
+    end
+
     def database_exists?(db_name)
       return false if @runner.dry_run?
 
-      result = @runner.run!("psql", "-lqt")
-      databases = result.out.lines.map { |l| l.split("|").first&.strip }.compact
-      databases.include?(db_name)
+      all_databases.include?(db_name)
+    end
+
+    def databases_matching(prefix)
+      return [] if @runner.dry_run?
+
+      all_databases.select { |db| db.start_with?(prefix) }
+    end
+
+    def all_databases
+      @all_databases ||= begin
+        result = @runner.run!("psql", "-lqt")
+        result.out.lines.map { |l| l.split("|").first&.strip }.compact.reject(&:empty?)
+      end
     end
 
     def prepare_rails(worktree_path, env_file:, base_env_file:, command:, ruby_manager:, ruby_version_file: ".ruby-version", rails_env: nil)

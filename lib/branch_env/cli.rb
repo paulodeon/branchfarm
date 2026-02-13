@@ -279,7 +279,8 @@ module BranchEnv
         step("Dropping databases") do
           db = Database.new(runner: runner)
           db.drop(dev_db)
-          db.drop(test_db)
+          # Drop test DB and any parallel test databases (e.g. _test2 through _test16)
+          db.drop_matching(test_db)
         end
       end
 
